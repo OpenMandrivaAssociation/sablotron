@@ -1,6 +1,6 @@
 %define name sablotron
 %define version 1.0.3
-%define release %mkrel 1
+%define release %mkrel 2
 
 %define	altname Sablot
 %define builddir $RPM_BUILD_DIR/%{altname}-%{version}
