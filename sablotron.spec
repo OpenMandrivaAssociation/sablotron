@@ -40,6 +40,7 @@ BuildRequires:	readline-devel
 %if %mdkversion >= 1020
 BuildRequires:	multiarch-utils >= 1.0.3
 %endif
+BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 %description
 Sablotron is a fast, compact and portable XML toolkit
