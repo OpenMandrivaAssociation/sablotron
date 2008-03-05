@@ -1,6 +1,5 @@
 %define name sablotron
 %define version 1.0.3
-%define release %mkrel 2
 
 %define	altname Sablot
 %define builddir $RPM_BUILD_DIR/%{altname}-%{version}
@@ -15,7 +14,7 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		%{name}
 Version:	%{version}
-Release:	%{release}
+Release:	%mkrel 3
 %if %{GPL} 
 License:	GPL
 %else
