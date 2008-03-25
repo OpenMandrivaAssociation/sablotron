@@ -14,7 +14,7 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		%{name}
 Version:	%{version}
-Release:	%mkrel 3
+Release:	%mkrel 4
 %if %{GPL} 
 License:	GPL
 %else
@@ -61,7 +61,7 @@ Contains the library for sablotron.
 %package -n	%{libname}-devel
 Summary:	The development libraries and header files for Sablotron
 Requires:	sablotron = %{version}
-Group:		System/Libraries
+Group:		Development/C
 Requires(post,preun): %{libname} = %{version}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	sablotron-devel = %{version}
