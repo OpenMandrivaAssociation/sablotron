@@ -7,9 +7,9 @@
 %define major 0
 %define libname %mklibname %{name} %{major}
 
-%{!?jscript: %define jscript 1}
-%{!?readline: %define readline 0}
-%{!?GPL: %define GPL 0}
+%define jscript 1
+%define readline 0
+%define GPL 0
 
 Summary:	XSLT, XPath and DOM processor
 Name:		%{name}
