@@ -14,7 +14,7 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		%{name}
 Version:	%{version}
-Release:	%mkrel 4
+Release:	%mkrel 5
 %if %{GPL} 
 License:	GPL
 %else
