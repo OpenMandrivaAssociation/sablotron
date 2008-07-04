@@ -1,8 +1,10 @@
 %define	altname Sablot
 %define builddir $RPM_BUILD_DIR/%{altname}-%{version}
 %define libname_orig libsablotron
+
 %define major 0
 %define libname %mklibname %{name} %{major}
+%define develname %mklibname %{name} -d
 
 %define jscript 1
 %define readline 0
@@ -21,12 +23,14 @@ Group:		Development/Other
 URL:		http://www.gingerall.cz
 Source0:	http://download-1.gingerall.cz/download/sablot/%{altname}-%{version}.tar.bz2
 Source1:	http://download-1.gingerall.cz/download/sablot/SabTest-%{version}.tar.bz2
+Patch0:		Sablot-linkage_fix.diff
 BuildRequires:	expat-devel >= 1.95.2
 BuildRequires:	perl-XML-Parser
 BuildRequires:	ncurses-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	autoconf2.5
 BuildRequires:	automake1.9 >= 1.9.2
+BuildRequires:	libtool
 %if %{jscript}
 BuildRequires:	js-devel >= 1.5
 BuildRequires:	pkgconfig
@@ -56,16 +60,15 @@ Provides:	%{libname_orig} = %{version}-%{release}
 %description -n	%{libname}
 Contains the library for sablotron.
 
-%package -n	%{libname}-devel
+%package -n	%{develname}
 Summary:	The development libraries and header files for Sablotron
 Requires:	sablotron = %{version}
 Group:		Development/C
-Requires(post): %{libname} = %{version}
-Requires(preun): %{libname} = %{version}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	sablotron-devel = %{version}
+Obsoletes:	%{mklibname %{name} -d 0}
 
-%description -n	%{libname}-devel
+%description -n	%{develname}
 These are the development libraries and header files for Sablotron
 
 %prep
@@ -76,6 +79,8 @@ exit 1
 %endif
 
 %setup -q -n %{altname}-%{version} -a1
+%patch0 -p0
+
 perl -pi -e 's,SABLOT_LIBS="-L\$sab_base/lib",SABLOT_LIBS="-L\$sab_base/%{_lib}",' SabTest-%{version}/configure{.in,}
 
 %if %{jscript}
@@ -84,14 +89,19 @@ perl -pi -e "s|/include/js\b|$JS_INCLUDE_PATH|g" configure*
 %endif
 
 %build
-libtoolize --copy --force; aclocal; autoconf
+touch NEWS AUTHORS ChangeLog
+libtoolize --copy --force; aclocal; autoconf; automake --add-missing --copy
+
+export CXXFLAGS="%{optflags}"
+
 %if %{jscript}
 export CPLUS_INCLUDE_PATH=`pkg-config --cflags libjs|sed -e 's/-I//'`
 %endif
-export CXXFLAGS="%{optflags}"
+
 %if %{GPL}
 export SABLOT_GPL=1
 %endif
+
 %configure2_5x \
 %if %{jscript}
     --enable-javascript=%{_prefix} \
@@ -113,7 +123,7 @@ make test-js
 popd
 
 %install
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 %makeinstall_std
 
@@ -133,10 +143,10 @@ rm -rf %{buildroot}%{_datadir}/doc
 %endif
 
 %clean
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 %files
-%defattr(755,root,root)
+%defattr(0755,root,root)
 %{_bindir}/sabcmd
 %_mandir/man1/*
 
@@ -145,7 +155,7 @@ rm -rf %{buildroot}%{_datadir}/doc
 %doc README RELEASE doc/misc/NOTES doc/misc/DEBUGGER
 %{_libdir}/libsablot.so.*
 
-%files -n %{libname}-devel
+%files -n %{develname}
 %defattr(-,root,root)
 %doc doc/apidoc/sablot doc/apidoc/jsdom-ref doc/apidoc/sxp
 %if %mdkversion >= 1020
@@ -156,5 +166,3 @@ rm -rf %{buildroot}%{_datadir}/doc
 %{_libdir}/lib*.la
 %{_libdir}/lib*.so
 %{_includedir}/*.h
-
-
