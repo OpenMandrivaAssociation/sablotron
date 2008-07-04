@@ -1,6 +1,3 @@
-%define name sablotron
-%define version 1.0.3
-
 %define	altname Sablot
 %define builddir $RPM_BUILD_DIR/%{altname}-%{version}
 %define libname_orig libsablotron
@@ -12,8 +9,8 @@
 %define GPL 0
 
 Summary:	XSLT, XPath and DOM processor
-Name:		%{name}
-Version:	%{version}
+Name:		sablotron
+Version:	1.0.3
 Release:	%mkrel 5
 %if %{GPL} 
 License:	GPL
@@ -32,6 +29,7 @@ BuildRequires:	autoconf2.5
 BuildRequires:	automake1.9 >= 1.9.2
 %if %{jscript}
 BuildRequires:	js-devel >= 1.5
+BuildRequires:	pkgconfig
 %endif 
 %if %{readline}
 BuildRequires:	readline-devel
@@ -39,7 +37,7 @@ BuildRequires:	readline-devel
 %if %mdkversion >= 1020
 BuildRequires:	multiarch-utils >= 1.0.3
 %endif
-BuildRoot:	%{_tmppath}/%{name}-%{version}-buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Sablotron is a fast, compact and portable XML toolkit
@@ -62,7 +60,8 @@ Contains the library for sablotron.
 Summary:	The development libraries and header files for Sablotron
 Requires:	sablotron = %{version}
 Group:		Development/C
-Requires(post,preun): %{libname} = %{version}
+Requires(post): %{libname} = %{version}
+Requires(preun): %{libname} = %{version}
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	sablotron-devel = %{version}
 
@@ -70,6 +69,7 @@ Provides:	sablotron-devel = %{version}
 These are the development libraries and header files for Sablotron
 
 %prep
+
 %if %{readline} && !%{GPL}
 echo "The readline library may not be linked to non GPL'ed programs, so if you want to have readline support in the debugger, you have to choose the GPL from Sablotron license model."
 exit 1
@@ -78,9 +78,15 @@ exit 1
 %setup -q -n %{altname}-%{version} -a1
 perl -pi -e 's,SABLOT_LIBS="-L\$sab_base/lib",SABLOT_LIBS="-L\$sab_base/%{_lib}",' SabTest-%{version}/configure{.in,}
 
-%build
 %if %{jscript}
-export CPLUS_INCLUDE_PATH=%{_includedir}/js-1.5
+JS_INCLUDE_PATH=`pkg-config --cflags libjs|sed -e 's/-I\/usr//'`
+perl -pi -e "s|/include/js\b|$JS_INCLUDE_PATH|g" configure*
+%endif
+
+%build
+libtoolize --copy --force; aclocal; autoconf
+%if %{jscript}
+export CPLUS_INCLUDE_PATH=`pkg-config --cflags libjs|sed -e 's/-I//'`
 %endif
 export CXXFLAGS="%{optflags}"
 %if %{GPL}
@@ -88,7 +94,7 @@ export SABLOT_GPL=1
 %endif
 %configure2_5x \
 %if %{jscript}
-    --enable-javascript \
+    --enable-javascript=%{_prefix} \
 %endif
 %if %{GPL} && %{readline}
     --with-readline \
