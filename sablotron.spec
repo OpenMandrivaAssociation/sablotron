@@ -13,7 +13,7 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		sablotron
 Version:	1.0.3
-Release:	%mkrel 6
+Release:	%mkrel 7
 %if %{GPL} 
 License:	GPL
 %else
@@ -87,10 +87,14 @@ perl -pi -e 's,SABLOT_LIBS="-L\$sab_base/lib",SABLOT_LIBS="-L\$sab_base/%{_lib}"
 JS_INCLUDE_PATH=`pkg-config --cflags libjs|sed -e 's/-I\/usr//'`
 perl -pi -e "s|/include/js\b|$JS_INCLUDE_PATH|g" configure*
 %endif
+touch NEWS AUTHORS ChangeLog
+autoreconf -fi
+pushd SabTest-%{version}
+touch NEWS AUTHORS ChangeLog
+autoreconf -fi
+popd
 
 %build
-touch NEWS AUTHORS ChangeLog
-libtoolize --copy --force; aclocal; autoconf; automake --add-missing --copy
 
 export CXXFLAGS="%{optflags}"
 
