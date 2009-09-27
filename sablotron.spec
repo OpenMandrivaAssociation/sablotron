@@ -113,9 +113,12 @@ export SABLOT_GPL=1
 
 %make
 
+%check
 # make and run the test suite
 make DESTDIR=`pwd`/SabTest-%{version} install
 pushd SabTest-%{version}
+touch NEWS AUTHORS ChangeLog
+libtoolize --copy --force; aclocal; autoconf; automake --add-missing --copy
 %configure2_5x --with-sablot=`pwd`/usr
 %make
 make test
