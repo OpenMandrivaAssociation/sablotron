@@ -13,7 +13,7 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		sablotron
 Version:	1.0.3
-Release:	%mkrel 9
+Release:	%mkrel 10
 %if %{GPL} 
 License:	GPL
 %else
@@ -37,9 +37,6 @@ BuildRequires:	pkgconfig
 %endif 
 %if %{readline}
 BuildRequires:	readline-devel
-%endif
-%if %mdkversion >= 1020
-BuildRequires:	multiarch-utils >= 1.0.3
 %endif
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -134,9 +131,7 @@ rm -rf %{buildroot}
 
 %makeinstall_std
 
-%if %mdkversion >= 1020
 %multiarch_binaries %{buildroot}%{_bindir}/sablot-config
-%endif
 
 # nuke installed docs
 rm -rf %{buildroot}%{_datadir}/doc
@@ -165,10 +160,8 @@ rm -rf %{buildroot}
 %files -n %{develname}
 %defattr(-,root,root)
 %doc doc/apidoc/sablot doc/apidoc/jsdom-ref doc/apidoc/sxp
-%if %mdkversion >= 1020
-%multiarch %{multiarch_bindir}/sablot-config
-%endif
 %{_bindir}/sablot-config
+%{multiarch_bindir}/sablot-config
 %{_libdir}/lib*.a
 %{_libdir}/lib*.la
 %{_libdir}/lib*.so
