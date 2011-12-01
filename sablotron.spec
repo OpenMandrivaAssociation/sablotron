@@ -1,5 +1,5 @@
 %define	altname Sablot
-%define builddir $RPM_BUILD_DIR/%{altname}-%{version}
+%define builddir %{_builddir}/%{altname}-%{version}
 %define libname_orig libsablotron
 
 %define major 0
