@@ -13,8 +13,8 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		sablotron
 Version:	1.0.3
-Release:	%mkrel 10
-%if %{GPL} 
+Release:	12
+%if %{GPL}
 License:	GPL
 %else
 License:	MPL/GPL
@@ -28,9 +28,7 @@ BuildRequires:	expat-devel >= 1.95.2
 BuildRequires:	perl-XML-Parser
 BuildRequires:	ncurses-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	autoconf2.5
-BuildRequires:	automake1.9 >= 1.9.2
-BuildRequires:	libtool
+BuildRequires:	autoconf automake libtool
 %if %{jscript}
 BuildRequires:	js-devel >= 1.5
 BuildRequires:	pkgconfig
@@ -38,7 +36,6 @@ BuildRequires:	pkgconfig
 %if %{readline}
 BuildRequires:	readline-devel
 %endif
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Sablotron is a fast, compact and portable XML toolkit
@@ -59,7 +56,7 @@ Contains the library for sablotron.
 
 %package -n	%{develname}
 Summary:	The development libraries and header files for Sablotron
-Requires:	sablotron = %{version}
+Requires:	sablotron >= %{version}
 Group:		Development/C
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	sablotron-devel = %{version}
@@ -136,33 +133,20 @@ rm -rf %{buildroot}
 # nuke installed docs
 rm -rf %{buildroot}%{_datadir}/doc
 
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-%clean
-rm -rf %{buildroot}
+# cleanups
+rm -f %{buildroot}%{_libdir}/*.*a
 
 %files
-%defattr(0755,root,root)
 %{_bindir}/sabcmd
 %_mandir/man1/*
 
 %files -n %{libname}
-%defattr(-,root,root)
 %doc README RELEASE doc/misc/NOTES doc/misc/DEBUGGER
 %{_libdir}/libsablot.so.*
 
 %files -n %{develname}
-%defattr(-,root,root)
 %doc doc/apidoc/sablot doc/apidoc/jsdom-ref doc/apidoc/sxp
 %{_bindir}/sablot-config
 %{multiarch_bindir}/sablot-config
-%{_libdir}/lib*.a
-%{_libdir}/lib*.la
 %{_libdir}/lib*.so
 %{_includedir}/*.h
