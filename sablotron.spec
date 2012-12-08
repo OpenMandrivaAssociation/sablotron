@@ -1,5 +1,5 @@
 %define	altname Sablot
-%define builddir %{_builddir}/%{altname}-%{version}
+%define builddir $RPM_BUILD_DIR/%{altname}-%{version}
 %define libname_orig libsablotron
 
 %define major 0
@@ -13,8 +13,8 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		sablotron
 Version:	1.0.3
-Release:	12
-%if %{GPL}
+Release:	%mkrel 11
+%if %{GPL} 
 License:	GPL
 %else
 License:	MPL/GPL
@@ -28,7 +28,9 @@ BuildRequires:	expat-devel >= 1.95.2
 BuildRequires:	perl-XML-Parser
 BuildRequires:	ncurses-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	autoconf automake libtool
+BuildRequires:	autoconf2.5
+BuildRequires:	automake1.9 >= 1.9.2
+BuildRequires:	libtool
 %if %{jscript}
 BuildRequires:	js-devel >= 1.5
 BuildRequires:	pkgconfig
@@ -36,6 +38,7 @@ BuildRequires:	pkgconfig
 %if %{readline}
 BuildRequires:	readline-devel
 %endif
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Sablotron is a fast, compact and portable XML toolkit
@@ -56,7 +59,7 @@ Contains the library for sablotron.
 
 %package -n	%{develname}
 Summary:	The development libraries and header files for Sablotron
-Requires:	sablotron >= %{version}
+Requires:	sablotron = %{version}
 Group:		Development/C
 Provides:	%{libname_orig}-devel = %{version}-%{release}
 Provides:	sablotron-devel = %{version}
@@ -133,20 +136,129 @@ rm -rf %{buildroot}
 # nuke installed docs
 rm -rf %{buildroot}%{_datadir}/doc
 
-# cleanups
-rm -f %{buildroot}%{_libdir}/*.*a
+%if %mdkversion < 200900
+%post -n %{libname} -p /sbin/ldconfig
+%endif
+
+%if %mdkversion < 200900
+%postun -n %{libname} -p /sbin/ldconfig
+%endif
+
+%clean
+rm -rf %{buildroot}
 
 %files
+%defattr(0755,root,root)
 %{_bindir}/sabcmd
 %_mandir/man1/*
 
 %files -n %{libname}
+%defattr(-,root,root)
 %doc README RELEASE doc/misc/NOTES doc/misc/DEBUGGER
 %{_libdir}/libsablot.so.*
 
 %files -n %{develname}
+%defattr(-,root,root)
 %doc doc/apidoc/sablot doc/apidoc/jsdom-ref doc/apidoc/sxp
 %{_bindir}/sablot-config
 %{multiarch_bindir}/sablot-config
+%{_libdir}/lib*.a
 %{_libdir}/lib*.so
 %{_includedir}/*.h
+
+
+%changelog
+* Mon May 02 2011 Oden Eriksson <oeriksson@mandriva.com> 1.0.3-10mdv2011.0
++ Revision: 661750
+- multiarch fixes
+
+* Fri Dec 03 2010 Oden Eriksson <oeriksson@mandriva.com> 1.0.3-9mdv2011.0
++ Revision: 607486
+- rebuild
+
+* Sun Mar 14 2010 Oden Eriksson <oeriksson@mandriva.com> 1.0.3-8mdv2010.1
++ Revision: 519068
+- rebuild
+
+* Mon Sep 28 2009 Olivier Blin <oblin@mandriva.com> 1.0.3-7mdv2010.0
++ Revision: 450337
+- use autoreconf -fi to get rid of libtool errors
+  (from Arnaud Patard)
+
+* Sun Sep 27 2009 Tomasz Pawel Gajc <tpg@mandriva.org> 1.0.3-6mdv2010.0
++ Revision: 449822
+- fix tests
+
+* Mon Dec 22 2008 Oden Eriksson <oeriksson@mandriva.com> 1.0.3-6mdv2009.1
++ Revision: 317636
+- rebuild
+
+* Fri Jul 04 2008 Oden Eriksson <oeriksson@mandriva.com> 1.0.3-5mdv2009.0
++ Revision: 231772
+- added P0 to fix linkage (-lexpat)
+- fix devel package naming
+- fix build (partly)
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - rebuild
+
+  + Pixel <pixel@mandriva.com>
+    - do not call ldconfig in %%post/%%postun, it is now handled by filetriggers
+
+* Tue Mar 25 2008 Olivier Blin <oblin@mandriva.com> 1.0.3-4mdv2008.1
++ Revision: 190045
+- fix build by removing conditional defines
+- use Development/C group for devel package (thanks pterjan)
+- restore BuildRoot
+
+  + Oden Eriksson <oeriksson@mandriva.com>
+    - rebuild
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - kill re-definition of %%buildroot on Pixel's request
+
+* Thu Jun 07 2007 Tomasz Pawel Gajc <tpg@mandriva.org> 1.0.3-2mdv2008.0
++ Revision: 36950
+- rebuild for expat
+
+
+* Tue Feb 13 2007 Olivier Blin <oblin@mandriva.com> 1.0.3-1mdv2007.0
++ Revision: 120628
+- use a perl one-liner to replace previous patch for lib64 tests
+- don't require expat package
+- 1.0.3 (and drop now useless patches)
+- Import sablotron
+
+* Wed Aug 24 2005 Gwenole Beauchesne <gbeauchesne@mandriva.com> 1.0.2-2mdk
+- lib64 fixes
+
+* Sun May 22 2005 Oden Eriksson <oeriksson@mandriva.com> 1.0.2-1mdk
+- 1.0.2
+- rediffed P0
+- added the test suite
+- use new rpm-4.4.x pre,post magic
+
+* Wed Mar 16 2005 Oden Eriksson <oeriksson@mandrakesoft.com> 1.0.1-7mdk
+- make it find the headers
+- fix deps and conditional %%multiarch
+
+* Sat Jul 17 2004 Christiaan Welvaart <cjw@daneel.dyndns.org> 1.0.1-6mdk
+- add BuildRequires: perl-XML-Parser
+
+* Tue Jul 13 2004 Oden Eriksson <oeriksson@mandrakesoft.com> 1.0.1-5mdk
+- rebuild
+
+* Wed Jun 09 2004 Götz Waschk <waschk@linux-mandrake.com> 1.0.1-4mdk
+- patch for new g++
+
+* Sun May 23 2004 Oden Eriksson <oeriksson@mandrakesoft.com> 1.0.1-3mdk
+- might as well let it provide sablotron-devel
+
+* Sun May 23 2004 Oden Eriksson <oeriksson@mandrakesoft.com> 1.0.1-2mdk
+- disable readline support
+
+* Fri May 21 2004 Oden Eriksson <oeriksson@mandrakesoft.com> 1.0.1-1mdk
+- use the %%configure2_5x macro
+- sync with the spec file by Petr Cimpricg <petr@gingerall.cz>
+- spec file cleanups
+
