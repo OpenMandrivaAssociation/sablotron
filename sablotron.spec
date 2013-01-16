@@ -13,7 +13,7 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		sablotron
 Version:	1.0.3
-Release:	%mkrel 11
+Release:	12
 %if %{GPL} 
 License:	GPL
 %else
@@ -24,6 +24,7 @@ URL:		http://www.gingerall.cz
 Source0:	http://download-1.gingerall.cz/download/sablot/%{altname}-%{version}.tar.bz2
 Source1:	http://download-1.gingerall.cz/download/sablot/SabTest-%{version}.tar.bz2
 Patch0:		Sablot-linkage_fix.diff
+Patch1:		sablot-automake-1.13.patch
 BuildRequires:	expat-devel >= 1.95.2
 BuildRequires:	perl-XML-Parser
 BuildRequires:	ncurses-devel
@@ -38,7 +39,6 @@ BuildRequires:	pkgconfig
 %if %{readline}
 BuildRequires:	readline-devel
 %endif
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Sablotron is a fast, compact and portable XML toolkit
@@ -77,6 +77,7 @@ exit 1
 
 %setup -q -n %{altname}-%{version} -a1
 %patch0 -p0
+%patch1 -p1 -b .am113~
 
 perl -pi -e 's,SABLOT_LIBS="-L\$sab_base/lib",SABLOT_LIBS="-L\$sab_base/%{_lib}",' SabTest-%{version}/configure{.in,}
 

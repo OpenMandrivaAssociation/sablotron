@@ -1,0 +1,22 @@
+--- Sablot-1.0.3/configure.in.bero	2013-01-16 02:20:27.318531209 +0100
++++ Sablot-1.0.3/configure.in	2013-01-16 02:20:34.955440032 +0100
+@@ -47,7 +47,7 @@ AC_PREREQ( 2.56 )
+ AC_CONFIG_AUX_DIR(autocfg)
+ 
+ AM_INIT_AUTOMAKE($PKG_NAME, $PKG_VERSION, 'z')
+-AM_CONFIG_HEADER( autocfg/config.h:autocfg/config.h.in )
++AC_CONFIG_HEADERS( [autocfg/config.h:autocfg/config.h.in] )
+ 
+ dnl automake stuff
+ AC_PROG_LIBTOOL
+--- Sablot-1.0.3/SabTest-1.0.3/configure.in.bero	2013-01-16 02:21:55.181484252 +0100
++++ Sablot-1.0.3/SabTest-1.0.3/configure.in	2013-01-16 02:22:01.370410366 +0100
+@@ -47,7 +47,7 @@ AC_PREREQ( 2.13 )
+ AC_CONFIG_AUX_DIR(tools)
+ 
+ AM_INIT_AUTOMAKE($PKG_NAME, $PKG_VERSION, 'z')
+-AM_CONFIG_HEADER( autocfg/autocfg.h:autocfg/autocfg.h.in )
++AC_CONFIG_HEADERS( [autocfg/autocfg.h:autocfg/autocfg.h.in] )
+ 
+ dnl automake stuff
+ AM_PROG_LIBTOOL()
