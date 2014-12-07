@@ -13,7 +13,7 @@
 Summary:	XSLT, XPath and DOM processor
 Name:		sablotron
 Version:	1.0.3
-Release:	18
+Release:	19
 %if %{GPL} 
 License:	GPL
 %else
