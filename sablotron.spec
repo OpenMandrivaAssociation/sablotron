@@ -20,7 +20,7 @@ License:	GPL
 License:	MPL/GPL
 %endif
 Group:		Development/Other
-URL:		http://www.gingerall.cz
+URL:		https://www.gingerall.cz
 Source0:	http://download-1.gingerall.cz/download/sablot/%{altname}-%{version}.tar.bz2
 Source1:	http://download-1.gingerall.cz/download/sablot/SabTest-%{version}.tar.bz2
 Patch0:		Sablot-linkage_fix.diff
